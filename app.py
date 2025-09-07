@@ -114,7 +114,7 @@ def buscar_verbetes_online():
         return VERBETES_FALLBACK
 
 # Interface principal
-st.markdown("<h1>📖 Escolhedor Perspicaz</h1>", unsafe_allow_html=True)
+st.markdown("<h1>📖 Perspicaz Aleatório</h1>", unsafe_allow_html=True)
 st.markdown("---")
 
 # Inicializar verbetes
@@ -185,4 +185,5 @@ if 'ultimo_verbete' in st.session_state:
 # Rodapé
 st.markdown("---")
 st.caption("📱 App com TODOS os verbetes • ✨ Compartilhe com amigos!")
+
 
