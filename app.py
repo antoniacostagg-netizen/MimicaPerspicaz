@@ -8,7 +8,7 @@ import re
 
 # Configuração para celular
 st.set_page_config(
-    page_title="Escolhedor Perspicaz", 
+    page_title="Perspicaz Aleatório", 
     page_icon="📖", 
     layout="centered"
 )
@@ -185,3 +185,4 @@ if 'ultimo_verbete' in st.session_state:
 # Rodapé
 st.markdown("---")
 st.caption("📱 App com TODOS os verbetes • ✨ Compartilhe com amigos!")
+
