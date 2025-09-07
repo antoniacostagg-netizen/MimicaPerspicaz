@@ -12,10 +12,9 @@ st.set_page_config(
     layout="centered"
 )
 
-# CSS personalizado - BOTÃO AZUL e DESIGN MODERNO
+# CSS personalizado
 st.markdown("""
 <style>
-    /* BOTÃO AZUL PRINCIPAL */
     .stButton > button {
         background-color: #0066cc;
         color: white;
@@ -26,15 +25,10 @@ st.markdown("""
         border-radius: 15px;
         width: 100%;
         margin: 15px 0;
-        transition: all 0.3s ease;
     }
     .stButton > button:hover {
         background-color: #0052a3;
-        transform: scale(1.02);
-        box-shadow: 0 5px 20px rgba(0,102,204,0.3);
     }
-    
-    /* NOME DO VERBETE EM DESTAQUE */
     .verbete-destaque {
         text-align: center;
         color: #0066cc;
@@ -42,45 +36,24 @@ st.markdown("""
         font-weight: bold;
         margin: 25px 0;
         padding: 25px;
-        background: linear-gradient(135deg, #e6f7ff 0%, #ffffff 100%);
+        background: #e6f7ff;
         border-radius: 20px;
         border: 4px solid #0066cc;
-        box-shadow: 0 8px 25px rgba(0,102,204,0.15);
     }
-    
-    /* TÍTULO PRINCIPAL */
     .titulo-principal {
         text-align: center;
         color: #0066cc;
         font-size: 42px;
         font-weight: bold;
         margin-bottom: 5px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
-    
-    /* CONTADOR */
     .stSuccess {
-        background: linear-gradient(135deg, #e6f7ff 0%, #d1ecff 100%);
+        background: #e6f7ff;
         border-left: 5px solid #0066cc;
         border-radius: 15px;
         padding: 20px;
         font-size: 18px;
         text-align: center;
-    }
-    
-    /* LINK */
-    .link-verbete {
-        font-size: 18px;
-        color: #0066cc;
-        text-decoration: none;
-        word-break: break-all;
-        text-align: center;
-        display: block;
-        margin: 15px 0;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 10px;
-        border: 2px solid #e9ecef;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -89,7 +62,7 @@ st.markdown("""
 BASE_URL = "https://www.jw.org"
 INDEX_URL = "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Índice-de-Assuntos/"
 
-# Fallback caso não consiga buscar online
+# Fallback com verbetes principais
 VERBETES_FALLBACK = {
     "Abel": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Abel/",
     "Abraão": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Abra%C3%A3o/",
@@ -100,52 +73,77 @@ VERBETES_FALLBACK = {
     "Fé": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/F%C3%A9/",
     "Jesus": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Jesus/",
     "Paraíso": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Para%C3%ADso/",
-    "Esperança": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Esperan%C3%A7a/"
+    "Esperança": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Esperan%C3%A7a/",
+    "Deus": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Deus/",
+    "Espírito Santo": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Esp%C3%ADrito-Santo/",
+    "Igreja": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Igreja/",
+    "Bíblia": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/B%C3%ADblia/",
+    "Criação": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Cria%C3%A7%C3%A3o/",
+    "Salvação": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Salva%C3%A7%C3%A3o/",
+    "Ressurreição": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Ressurrei%C3%A7%C3%A3o/",
+    "Alma": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Alma/",
+    "Inferno": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Inferno/",
+    "Profecia": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Profecia/",
+    "Milagres": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Milagres/",
+    "Apóstolos": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Ap%C3%B3stolos/"
 }
 
-def buscar_verbetes_online():
-    """Busca TODOS os verbetes do site jw.org automaticamente"""
+def buscar_todos_verbetes():
+    """Busca TODOS os verbetes diretamente do índice do site JW.org"""
     try:
-        with st.spinner("🔍 Conectando ao jw.org para buscar verbetes..."):
-            response = requests.get(INDEX_URL, timeout=30)
+        with st.spinner("🌐 Conectando ao JW.org para buscar todos os verbetes..."):
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+            
+            response = requests.get(INDEX_URL, headers=headers, timeout=30)
             response.raise_for_status()
             
             soup = BeautifulSoup(response.text, 'html.parser')
             verbetes = {}
             
-            # Estratégia MELHORADA para encontrar verbetes
-            # Procurar em listas e parágrafos que contêm links
-            for elemento in soup.find_all(['li', 'p', 'div']):
-                links = elemento.find_all('a', href=True)
-                for link in links:
+            # Estratégia MELHORADA: Buscar em todas as tags que podem conter links de verbetes
+            for tag in soup.find_all(['a', 'li', 'p', 'div', 'span']):
+                if tag.name == 'a' and tag.has_attr('href'):
+                    href = tag['href']
+                    texto = tag.get_text(strip=True)
+                else:
+                    # Para outras tags, procurar links dentro delas
+                    link = tag.find('a', href=True)
+                    if not link:
+                        continue
                     href = link['href']
-                    texto = link.get_text(strip=True)
+                    texto = link.get_text(strip=True) or tag.get_text(strip=True)
+                
+                # Filtro PRECISO para verbetes do Estudo Perspicaz
+                if ('/Estudo-Perspicaz-das-Escrituras/' in href and 
+                    texto and 2 <= len(texto) <= 60 and
+                    not any(palavra in texto.lower() for palavra in [
+                        'índice', 'mapa', 'opções', 'voltar', 'pesquisa', 
+                        'busca', 'pesquisar', 'procurar', 'download', 'pdf',
+                        'epub', 'jw.org', 'biblioteca', 'livros'
+                    ]) and
+                    not re.search(r'\d', texto) and  # Remove textos com números
+                    texto[0].isalpha() and  # Começa com letra
+                    not texto.startswith(('(', '[', '{', '<')) and
+                    '..' not in texto and
+                    '...' not in texto):
                     
-                    # Filtro MAIS RESTRITIVO para pegar apenas verbetes
-                    if ('/Estudo-Perspicaz-das-Escrituras/' in href and 
-                        texto and 
-                        2 <= len(texto) <= 40 and
-                        not any(palavra in texto.lower() for palavra in [
-                            'índice', 'mapa', 'opções', 'voltar', 'pesquisa', 
-                            'busca', 'pesquisar', 'procurar'
-                        ]) and
-                        not re.search(r'\d', texto) and  # Remove textos com números
-                        not texto.startswith(('(', '[', '{', '<')) and
-                        texto[0].isalpha() and  # Começa com letra
-                        texto.isprintable()):  # Apenas caracteres imprimíveis
-                        
-                        url_completa = urljoin(BASE_URL, href)
+                    url_completa = urljoin(BASE_URL, href)
+                    # Garantir que é um URL válido do JW.org
+                    if 'jw.org' in url_completa and '/Estudo-Perspicaz-das-Escrituras/' in url_completa:
                         verbetes[texto] = url_completa
             
-            # Se não encontrou muitos verbetes, tentar método alternativo
-            if len(verbetes) < 50:
-                verbetes = VERBETES_FALLBACK.copy()
-                st.info("ℹ️ Usando lista pré-definida de verbetes")
-            
-            return verbetes
+            # Se encontrou verbetes, retornar; senão usar fallback
+            if verbetes:
+                return dict(sorted(verbetes.items()))
+            else:
+                st.warning("⚠️ Não foram encontrados verbetes. Usando lista pré-definida.")
+                return VERBETES_FALLBACK
             
     except Exception as e:
-        st.error("⚠️ Não foi possível conectar ao site. Usando lista local de verbetes.")
+        st.error(f"❌ Erro ao conectar: {str(e)}")
+        st.info("📋 Usando lista pré-definida de verbetes")
         return VERBETES_FALLBACK
 
 # Interface principal
@@ -154,34 +152,34 @@ st.markdown("---")
 
 # Inicializar verbetes
 if 'verbetes' not in st.session_state:
-    st.session_state.verbetes = buscar_verbetes_online()
+    st.session_state.verbetes = buscar_todos_verbetes()
+    st.session_state.carregado = True
 
-# Botão principal AZUL
-if st.button("🎲 ESCOLHER VERBETE ALEATÓRIO", type="primary", use_container_width=True):
-    if st.session_state.verbetes:
-        verbete, link = random.choice(list(st.session_state.verbetes.items()))
-        st.session_state.ultimo_verbete = (verbete, link)
-        
-        # Mostra o NOME DO VERBETE EM GRANDE DESTAQUE
-        st.markdown(f"<div class='verbete-destaque'>{verbete}</div>", unsafe_allow_html=True)
-        
-        # Mostra o link
-        st.markdown(f"<div class='link-verbete'>🔗 <strong>Link:</strong> {link}</div>", unsafe_allow_html=True)
-        
-        # Botão para abrir automaticamente
-        if st.button("🌐 ABRIR VERBETE NO NAVEGADOR", use_container_width=True, key="abrir_verbete"):
-            st.markdown(f'<meta http-equiv="refresh" content="0; url={link}">', unsafe_allow_html=True)
+# Botão principal
+col1, col2 = st.columns([3, 1])
 
-# Contador de verbetes
-st.success(f"**📊 VERBETES DISPONÍVEIS:** {len(st.session_state.verbetes)}")
+with col1:
+    if st.button("🎲 ESCOLHER VERBETE ALEATÓRIO", type="primary", use_container_width=True):
+        if st.session_state.verbetes:
+            verbete, link = random.choice(list(st.session_state.verbetes.items()))
+            st.session_state.ultimo_verbete = (verbete, link)
+            
+            st.markdown(f"<div class='verbete-destaque'>{verbete}</div>", unsafe_allow_html=True)
+            st.markdown(f"**🔗 Link:** {link}")
+            
+            if st.button("🌐 ABRIR NO NAVEGADOR", use_container_width=True):
+                st.markdown(f'<meta http-equiv="refresh" content="0; url={link}">', unsafe_allow_html=True)
 
-# Botão para atualizar
-if st.button("🔄 ATUALIZAR LISTA", use_container_width=True, key="atualizar"):
-    with st.spinner("Buscando verbetes atualizados..."):
-        st.session_state.verbetes = buscar_verbetes_online()
-    st.success(f"✅ {len(st.session_state.verbetes)} verbetes carregados!")
+with col2:
+    if st.button("🔄 ATUALIZAR", use_container_width=True):
+        with st.spinner("Atualizando..."):
+            st.session_state.verbetes = buscar_todos_verbetes()
+        st.success(f"✅ {len(st.session_state.verbetes)} verbetes!")
 
-# Busca de verbetes
+# Contador
+st.success(f"**📊 TOTAL DE VERBETES:** {len(st.session_state.verbetes)}")
+
+# Busca
 st.markdown("---")
 st.subheader("🔍 BUSCAR VERBETE")
 busca = st.text_input("Digite o nome do verbete:", placeholder="Ex: amor, fé, Jesus...")
@@ -189,13 +187,13 @@ busca = st.text_input("Digite o nome do verbete:", placeholder="Ex: amor, fé, J
 if busca:
     resultados = [v for v in st.session_state.verbetes.keys() if busca.lower() in v.lower()]
     if resultados:
-        st.write(f"**📝 RESULTADOS ({len(resultados)}):**")
+        st.write(f"**📝 Resultados ({len(resultados)}):**")
         for verbete in resultados[:8]:
             st.write(f"• **{verbete}**")
     else:
         st.info("❌ Nenhum verbete encontrado.")
 
-# Último verbete escolhido
+# Último verbete
 if 'ultimo_verbete' in st.session_state:
     st.markdown("---")
     st.subheader("🎯 ÚLTIMO VERBETE")
@@ -205,12 +203,4 @@ if 'ultimo_verbete' in st.session_state:
 
 # Rodapé
 st.markdown("---")
-st.markdown("### 📱 COMO USAR:")
-st.markdown("""
-1. Clique em **🎲 ESCOLHER VERBETE ALEATÓRIO**
-2. Use a busca para verbetes específicos  
-3. Clique em **🌐 ABRIR VERBETE** para ler
-4. Compartilhe com amigos!
-""")
-
-st.caption("✨ Desenvolvido para estudar as Escrituras • 📖 Estudo Perspicaz")
+st.caption("✨ Desenvolvido para estudo das Escrituras • 📖 Estudo Perspicaz")
