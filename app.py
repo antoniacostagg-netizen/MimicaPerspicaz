@@ -2,7 +2,7 @@ import streamlit as st import requests from bs4 import BeautifulSoup from urllib
 
 Configuração para celular
 
-st.set_page_config( page_title="Perspicaz Aleatório",  page_icon="📖",  layout="centered" )
+st.set_page_config( page_title="Escolhedor Perspicaz",  page_icon="📖",  layout="centered" )
 
 CSS para botão AZUL personalizado
 
@@ -47,7 +47,7 @@ def buscar_verbetes_online(): """Busca TODOS os verbetes do site jw.org automati
 
 Interface principal
 
-st.markdown("<h1>📖 Perspicaz Aleatório</h1>", unsafe_allow_html=True) st.markdown("---")
+st.markdown("<h1>📖 Escolhedor Perspicaz</h1>", unsafe_allow_html=True) st.markdown("---")
 
 Inicializar verbetes
 
