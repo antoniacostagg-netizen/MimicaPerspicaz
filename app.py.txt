@@ -1,0 +1,43 @@
+import streamlit as st
+import random
+
+# Configuração para celular
+st.set_page_config(page_title="Escolhedor Perspicaz", page_icon="📖", layout="centered")
+
+# Lista de verbetes
+VERBETES = {
+    "Abel": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Abel/",
+    "Abraão": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Abra%C3%A3o/",
+    "Amor": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Amor/",
+    "Anjos": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Anjos/",
+    "Batismo": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Batismo/",
+    "Céu": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/C%C3%A9u/",
+    "Fé": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/F%C3%A9/",
+    "Jesus": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Jesus/",
+    "Paraíso": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Para%C3%ADso/",
+    "Esperança": "https://www.jw.org/pt/biblioteca/livros/Estudo-Perspicaz-das-Escrituras/Esperan%C3%A7a/"
+}
+
+# App principal
+st.title("📖 Escolhedor Perspicaz")
+st.markdown("---")
+
+if st.button("🎲 ESCOLHER ALEATORIAMENTE", type="primary", use_container_width=True):
+    verbete, link = random.choice(list(VERBETES.items()))
+    st.markdown(f"<h2 style='text-align: center; color: blue;'>{verbete}</h2>", unsafe_allow_html=True)
+    st.markdown(f"**🔗 Link:** {link}")
+    
+    if st.button("🌐 Abrir no Navegador", use_container_width=True):
+        st.markdown(f'<meta http-equiv="refresh" content="0; url={link}">', unsafe_allow_html=True)
+
+# Busca
+st.markdown("---")
+st.subheader("🔍 Buscar Verbete")
+busca = st.text_input("Digite o nome do verbete:")
+if busca:
+    for verbete, link in VERBETES.items():
+        if busca.lower() in verbete.lower():
+            st.write(f"**{verbete}** - {link}")
+
+st.markdown("---")
+st.caption("📱 App Permanente • ✨ Compartilhe com amigos!")
